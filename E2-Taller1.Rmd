@@ -4,6 +4,15 @@ output: html_notebook
 ---
 
 ## 1. Funciones en R
+Para construir funciones en R es necesario seguir la siguiente estructura:
+```{r}
+nombre_de_funcion <- function(par1, par2, ...) {
+  cuerpo
+  return(resultado)
+}
+```
+Dichas funciones se pueden usar digitando su nombre seguido de los parámetros entre paréntesis, son usadas para encapsular código que se usará constantemente y a pesar de no retornar más de un valor, es posible crear una lista de diferentes salidas y retornarla, como se mostrará a continuación en el caso de la función iqr(v), que recibe como entrada un vector de valores numéricos y dentro calcula el primer y tercer cuartil (0.25 y 0.75) haciendo uso de la función predefinida de R, quantile, la cual recibe el vector, los valores de los cuantiles requeridos y se setea el parámetro names en falso para que solo se retorne el valor y no su porcentaje (por ejemplo, 25% y 75%). Luego se guardan los valores que se quieren retornar en una lista (usando list) haciendo una asignación de clave-valor que finalmente se retornará.
+
 ```{r}
 values = c(7,5,9,2,1,8,3,4,6,10)
 iqr <- function(v) {
@@ -19,6 +28,10 @@ iqr(values)
 * Funciones de densidad de probabilidad:
 * Función de distribución acumulada:
 * Función cuantil de la distribución
+
+¿Qué funciones existen en R que permitan obtener valores asociadas a esas funciones?
+
+Muestre estas funciones para 4 distribuciones de probabilidad diferentes (dos distribuciones de variables continuas y dos distribuciones de variables discretas). Use gráficas para visualizar dichas funciones.
 
 ## 3. Investigando la construcción de los intervalos de confianza con el lenguaje de programación R
 (a) Extraiga 10000 muestras, cada una de 20 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
