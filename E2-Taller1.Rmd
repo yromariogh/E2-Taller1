@@ -20,9 +20,11 @@ iqr(values)
 * Función de distribución acumulada:
 * Función cuantil de la distribución
 
-
 ## 3. Investigando la construcción de los intervalos de confianza con el lenguaje de programación R
-*CONCLUSIÓN: *
-Observe que el valor esperado de ${S^2}^*$ es menor que el de $S^2$. Además, el valor esperado de $S^2$ es más cercano al valor de la varianza poblacional $\sigma ^ 2=100$.
+(a) Extraiga 10000 muestras, cada una de 20 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
+(b) Extraiga 10000 muestras, cada una de 10 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
+(c) Extraiga 10000 muestras, cada una de 10 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use una distribución normal (que NO se debería usar porque la muestra es demasiado pequeña!). Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
+(d) Extraiga 10000 muestras, cada una de 3 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
+(e) Extraiga 10000 muestras, cada una de 3 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use una distribución normal (que NO se debería usar porque la muestra es demasiado pequeña!). Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
 
-En este notebook se muestra mediante simulación que $S^2$ es un estimador insesgado de $\sigma^2$, mientras que ${S^2}^*$ no lo es. Para ver una demostración analítica se puede revisar el [Ejemplo 9.1](http://bibliotecavirtual.uis.edu.co:2168/?il=3375&pg=289) del libro de Walpole.
+## 4. Conclusiones
