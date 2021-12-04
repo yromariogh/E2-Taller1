@@ -4,10 +4,6 @@ output: html_notebook
 ---
 
 ## 1. Funciones en R
-`nombre_de_funcion <- function(par1, par2, ...) {`\
-  `cuerpo`\
-  `return(resultado)`\
-`}`
 ```{r}
 values = c(7,5,9,2,1,8,3,4,6,10)
 iqr <- function(v) {
@@ -19,55 +15,12 @@ iqr <- function(v) {
 iqr(values)
 ```
 
-
-$$S^2 = \frac{1}{n-1}\sum(x_i-\bar X)^2$$
-$S^2$ es un estimador insesgado del valor de $\sigma$. En contraposición, podemos observar el valor del estimador sesgado ${S^2}^*$:
-$${S^2}^* = \frac{1}{n}\sum(x_i-\bar X)^2$$
-
-```{r}
-n_sample=25
-y <- rnorm(n=n_sample, mean=50, sd = 10) 
-# Acá estamos generando valores que siguen esa dist. Normal
-
-# Si hacemos n_sample>100, el histograma se deberia aproximar a la función en línea azul
-
-muestral_mean = mean(y)
-muestral_var = sum((y-mean(y))^2)/(n_sample-1)
-muestral_var2 = sum((y-mean(y))^2)/(n_sample)
-
-
-hist(y, freq=FALSE, xlim=c(0,100), ylim=c(0,0.06), main= paste("Histograma de la muestra. n=", n_sample))
-curve(dnorm(x, mean=50, sd = 10), from=0, to=100, col='blue', add=TRUE)
-
-text (80, 0.05, paste("media muestral: ", round(muestral_mean,2)))
-text (80, 0.045, paste("varianza muestral S^2:", round(muestral_var,2)))
-text (80, 0.04, paste("varianza muestral S^2*:", round(muestral_var2,2)))
-
-```
-En un solo experimento, no es claro cuál es el valor esperado de $S^2$ y de ${S^2}^*$. Para observar el valor esperado de estos estimadores debemos realizar el experimento muchas veces (por ejemplo mil veces), y ver cuál es el valor esperado de la varianza muestral, teniendo en cuenta que el tamaño de la muestra es n_sample=25
-
 ## 2. Distribuciones de probabilidad en R
-```{r}
-# n_sample=25
-all_variances= c()
-all_variances2 = c()
+* Funciones de densidad de probabilidad:
+* Función de distribución acumulada:
+* Función cuantil de la distribución
 
-for(k in 1:1000){ #Repetimos el experimento 1000 veces
-  
-  y <- rnorm(n=n_sample, mean=50, sd = 10) 
-  # Si hacemos n_sample>100, el histograma se deberia aproximar a la función en línea azul
-  
-  muestral_mean = mean(y)
-  muestral_var = sum((y-mean(y))^2)/(n_sample-1)
-  muestral_var2 = sum((y-mean(y))^2)/(n_sample)
-  
-  all_variances <- c(all_variances, muestral_var)
-  all_variances2 <- c(all_variances2, muestral_var2)
-}
 
-paste("El valor esperado de la varianza  (S^2) es: ", mean(all_variances))
-paste("El valor esperado de la varianza  (S^2*) es: ", mean(all_variances2))
-```
 ## 3. Investigando la construcción de los intervalos de confianza con el lenguaje de programación R
 *CONCLUSIÓN: *
 Observe que el valor esperado de ${S^2}^*$ es menor que el de $S^2$. Además, el valor esperado de $S^2$ es más cercano al valor de la varianza poblacional $\sigma ^ 2=100$.

@@ -217,16 +217,10 @@ pre code {
 <!-- rnb-text-begin -->
 <div id="funciones-en-r" class="section level2">
 <h2>1. Funciones en R</h2>
-<p><code>nombre_de_funcion &lt;- function(par1, par2, ...) {</code><br />
-<code>cuerpo</code><br />
-<code>return(resultado)</code><br />
-<code>}</code></p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudmFsdWVzID0gYyg3LDUsOSwyLDEsOCwzLDQsNiwxMClcblxuXG5pcXIgPC0gZnVuY3Rpb24odikge1xuICBxMSA9IHF1YW50aWxlKHYsMS80LG5hbWVzID0gRkFMU0UpXG4gIHEzID0gcXVhbnRpbGUodiwzLzQsbmFtZXMgPSBGQUxTRSlcbiAgaXFyX2xpc3Q9bGlzdChcInExXCI9cTEsXCJxM1wiPXEzLFwiZXh0XCI9cTMtcTEpXG4gIHJldHVybiAoaXFyX2xpc3QpO1xufVxuaXFyKHZhbHVlcylcbmBgYCJ9 -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxudmFsdWVzID0gYyg3LDUsOSwyLDEsOCwzLDQsNiwxMClcbmlxciA8LSBmdW5jdGlvbih2KSB7XG4gIHExID0gcXVhbnRpbGUodiwxLzQsbmFtZXMgPSBGQUxTRSlcbiAgcTMgPSBxdWFudGlsZSh2LDMvNCxuYW1lcyA9IEZBTFNFKVxuICBpcXJfbGlzdD1saXN0KFwicTFcIj1xMSxcInEzXCI9cTMsXCJleHRcIj1xMy1xMSlcbiAgcmV0dXJuIChpcXJfbGlzdCk7XG59XG5pcXIodmFsdWVzKVxuYGBgIn0= -->
 <pre class="r"><code>values = c(7,5,9,2,1,8,3,4,6,10)
-
-
 iqr &lt;- function(v) {
   q1 = quantile(v,1/4,names = FALSE)
   q3 = quantile(v,3/4,names = FALSE)
@@ -247,60 +241,14 @@ $ext
 <!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
-<p><span class="math display">\[S^2 = \frac{1}{n-1}\sum(x_i-\bar X)^2\]</span> <span class="math inline">\(S^2\)</span> es un estimador insesgado del valor de <span class="math inline">\(\sigma\)</span>. En contraposición, podemos observar el valor del estimador sesgado <span class="math inline">\({S^2}^*\)</span>: <span class="math display">\[{S^2}^* = \frac{1}{n}\sum(x_i-\bar X)^2\]</span></p>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubl9zYW1wbGU9MjVcbnkgPC0gcm5vcm0obj1uX3NhbXBsZSwgbWVhbj01MCwgc2QgPSAxMCkgXG4jIEFjw6EgZXN0YW1vcyBnZW5lcmFuZG8gdmFsb3JlcyBxdWUgc2lndWVuIGVzYSBkaXN0LiBOb3JtYWxcblxuIyBTaSBoYWNlbW9zIG5fc2FtcGxlPjEwMCwgZWwgaGlzdG9ncmFtYSBzZSBkZWJlcmlhIGFwcm94aW1hciBhIGxhIGZ1bmNpw7NuIGVuIGzDrW5lYSBhenVsXG5cbm11ZXN0cmFsX21lYW4gPSBtZWFuKHkpXG5tdWVzdHJhbF92YXIgPSBzdW0oKHktbWVhbih5KSleMikvKG5fc2FtcGxlLTEpXG5tdWVzdHJhbF92YXIyID0gc3VtKCh5LW1lYW4oeSkpXjIpLyhuX3NhbXBsZSlcblxuXG5oaXN0KHksIGZyZXE9RkFMU0UsIHhsaW09YygwLDEwMCksIHlsaW09YygwLDAuMDYpLCBtYWluPSBwYXN0ZShcIkhpc3RvZ3JhbWEgZGUgbGEgbXVlc3RyYS4gbj1cIiwgbl9zYW1wbGUpKVxuY3VydmUoZG5vcm0oeCwgbWVhbj01MCwgc2QgPSAxMCksIGZyb209MCwgdG89MTAwLCBjb2w9J2JsdWUnLCBhZGQ9VFJVRSlcblxudGV4dCAoODAsIDAuMDUsIHBhc3RlKFwibWVkaWEgbXVlc3RyYWw6IFwiLCByb3VuZChtdWVzdHJhbF9tZWFuLDIpKSlcbnRleHQgKDgwLCAwLjA0NSwgcGFzdGUoXCJ2YXJpYW56YSBtdWVzdHJhbCBTXjI6XCIsIHJvdW5kKG11ZXN0cmFsX3ZhciwyKSkpXG50ZXh0ICg4MCwgMC4wNCwgcGFzdGUoXCJ2YXJpYW56YSBtdWVzdHJhbCBTXjIqOlwiLCByb3VuZChtdWVzdHJhbF92YXIyLDIpKSlcblxuYGBgIn0= -->
-<pre class="r"><code>n_sample=25
-y &lt;- rnorm(n=n_sample, mean=50, sd = 10) 
-# Acá estamos generando valores que siguen esa dist. Normal
-
-# Si hacemos n_sample&gt;100, el histograma se deberia aproximar a la función en línea azul
-
-muestral_mean = mean(y)
-muestral_var = sum((y-mean(y))^2)/(n_sample-1)
-muestral_var2 = sum((y-mean(y))^2)/(n_sample)
-
-
-hist(y, freq=FALSE, xlim=c(0,100), ylim=c(0,0.06), main= paste(&quot;Histograma de la muestra. n=&quot;, n_sample))
-curve(dnorm(x, mean=50, sd = 10), from=0, to=100, col=&#39;blue&#39;, add=TRUE)
-
-text (80, 0.05, paste(&quot;media muestral: &quot;, round(muestral_mean,2)))
-text (80, 0.045, paste(&quot;varianza muestral S^2:&quot;, round(muestral_var,2)))
-text (80, 0.04, paste(&quot;varianza muestral S^2*:&quot;, round(muestral_var2,2)))
-</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
-<p>En un solo experimento, no es claro cuál es el valor esperado de <span class="math inline">\(S^2\)</span> y de <span class="math inline">\({S^2}^*\)</span>. Para observar el valor esperado de estos estimadores debemos realizar el experimento muchas veces (por ejemplo mil veces), y ver cuál es el valor esperado de la varianza muestral, teniendo en cuenta que el tamaño de la muestra es n_sample=25</p>
 </div>
 <div id="distribuciones-de-probabilidad-en-r" class="section level2">
 <h2>2. Distribuciones de probabilidad en R</h2>
-<!-- rnb-text-end -->
-<!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuIyBuX3NhbXBsZT0yNVxuYWxsX3ZhcmlhbmNlcz0gYygpXG5hbGxfdmFyaWFuY2VzMiA9IGMoKVxuXG5mb3IoayBpbiAxOjEwMDApeyAjUmVwZXRpbW9zIGVsIGV4cGVyaW1lbnRvIDEwMDAgdmVjZXNcbiAgXG4gIHkgPC0gcm5vcm0obj1uX3NhbXBsZSwgbWVhbj01MCwgc2QgPSAxMCkgXG4gICMgU2kgaGFjZW1vcyBuX3NhbXBsZT4xMDAsIGVsIGhpc3RvZ3JhbWEgc2UgZGViZXJpYSBhcHJveGltYXIgYSBsYSBmdW5jacOzbiBlbiBsw61uZWEgYXp1bFxuICBcbiAgbXVlc3RyYWxfbWVhbiA9IG1lYW4oeSlcbiAgbXVlc3RyYWxfdmFyID0gc3VtKCh5LW1lYW4oeSkpXjIpLyhuX3NhbXBsZS0xKVxuICBtdWVzdHJhbF92YXIyID0gc3VtKCh5LW1lYW4oeSkpXjIpLyhuX3NhbXBsZSlcbiAgXG4gIGFsbF92YXJpYW5jZXMgPC0gYyhhbGxfdmFyaWFuY2VzLCBtdWVzdHJhbF92YXIpXG4gIGFsbF92YXJpYW5jZXMyIDwtIGMoYWxsX3ZhcmlhbmNlczIsIG11ZXN0cmFsX3ZhcjIpXG59XG5cbnBhc3RlKFwiRWwgdmFsb3IgZXNwZXJhZG8gZGUgbGEgdmFyaWFuemEgIChTXjIpIGVzOiBcIiwgbWVhbihhbGxfdmFyaWFuY2VzKSlcbnBhc3RlKFwiRWwgdmFsb3IgZXNwZXJhZG8gZGUgbGEgdmFyaWFuemEgIChTXjIqKSBlczogXCIsIG1lYW4oYWxsX3ZhcmlhbmNlczIpKVxuYGBgIn0= -->
-<pre class="r"><code># n_sample=25
-all_variances= c()
-all_variances2 = c()
-
-for(k in 1:1000){ #Repetimos el experimento 1000 veces
-  
-  y &lt;- rnorm(n=n_sample, mean=50, sd = 10) 
-  # Si hacemos n_sample&gt;100, el histograma se deberia aproximar a la función en línea azul
-  
-  muestral_mean = mean(y)
-  muestral_var = sum((y-mean(y))^2)/(n_sample-1)
-  muestral_var2 = sum((y-mean(y))^2)/(n_sample)
-  
-  all_variances &lt;- c(all_variances, muestral_var)
-  all_variances2 &lt;- c(all_variances2, muestral_var2)
-}
-
-paste(&quot;El valor esperado de la varianza  (S^2) es: &quot;, mean(all_variances))
-paste(&quot;El valor esperado de la varianza  (S^2*) es: &quot;, mean(all_variances2))</code></pre>
-<!-- rnb-source-end -->
-<!-- rnb-chunk-end -->
-<!-- rnb-text-begin -->
+<ul>
+<li>Funciones de densidad de probabilidad:</li>
+<li>Función de distribución acumulada:</li>
+<li>Función cuantil de la distribución</li>
+</ul>
 </div>
 <div id="investigando-la-construcción-de-los-intervalos-de-confianza-con-el-lenguaje-de-programación-r" class="section level2">
 <h2>3. Investigando la construcción de los intervalos de confianza con el lenguaje de programación R</h2>
@@ -309,7 +257,7 @@ paste(&quot;El valor esperado de la varianza  (S^2*) es: &quot;, mean(all_varian
 <!-- rnb-text-end -->
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlRBTExFUjogVHV0b3JpYWwgUiDigJMgRGlzdHJpYnVjaW9uZXMgbXVlc3RyYWxlcyBlIGludGVydmFsb3MgZGUgY29uZmlhbnphIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyMgMS4gRnVuY2lvbmVzIGVuIFINCmBub21icmVfZGVfZnVuY2lvbiA8LSBmdW5jdGlvbihwYXIxLCBwYXIyLCAuLi4pIHtgXA0KICBgY3VlcnBvYFwNCiAgYHJldHVybihyZXN1bHRhZG8pYFwNCmB9YA0KYGBge3J9DQp2YWx1ZXMgPSBjKDcsNSw5LDIsMSw4LDMsNCw2LDEwKQ0KaXFyIDwtIGZ1bmN0aW9uKHYpIHsNCiAgcTEgPSBxdWFudGlsZSh2LDEvNCxuYW1lcyA9IEZBTFNFKQ0KICBxMyA9IHF1YW50aWxlKHYsMy80LG5hbWVzID0gRkFMU0UpDQogIGlxcl9saXN0PWxpc3QoInExIj1xMSwicTMiPXEzLCJleHQiPXEzLXExKQ0KICByZXR1cm4gKGlxcl9saXN0KTsNCn0NCmlxcih2YWx1ZXMpDQpgYGANCg0KDQokJFNeMiA9IFxmcmFjezF9e24tMX1cc3VtKHhfaS1cYmFyIFgpXjIkJA0KJFNeMiQgZXMgdW4gZXN0aW1hZG9yIGluc2VzZ2FkbyBkZWwgdmFsb3IgZGUgJFxzaWdtYSQuIEVuIGNvbnRyYXBvc2ljacOzbiwgcG9kZW1vcyBvYnNlcnZhciBlbCB2YWxvciBkZWwgZXN0aW1hZG9yIHNlc2dhZG8gJHtTXjJ9XiokOg0KJCR7U14yfV4qID0gXGZyYWN7MX17bn1cc3VtKHhfaS1cYmFyIFgpXjIkJA0KDQpgYGB7cn0NCm5fc2FtcGxlPTI1DQp5IDwtIHJub3JtKG49bl9zYW1wbGUsIG1lYW49NTAsIHNkID0gMTApIA0KIyBBY8OhIGVzdGFtb3MgZ2VuZXJhbmRvIHZhbG9yZXMgcXVlIHNpZ3VlbiBlc2EgZGlzdC4gTm9ybWFsDQoNCiMgU2kgaGFjZW1vcyBuX3NhbXBsZT4xMDAsIGVsIGhpc3RvZ3JhbWEgc2UgZGViZXJpYSBhcHJveGltYXIgYSBsYSBmdW5jacOzbiBlbiBsw61uZWEgYXp1bA0KDQptdWVzdHJhbF9tZWFuID0gbWVhbih5KQ0KbXVlc3RyYWxfdmFyID0gc3VtKCh5LW1lYW4oeSkpXjIpLyhuX3NhbXBsZS0xKQ0KbXVlc3RyYWxfdmFyMiA9IHN1bSgoeS1tZWFuKHkpKV4yKS8obl9zYW1wbGUpDQoNCg0KaGlzdCh5LCBmcmVxPUZBTFNFLCB4bGltPWMoMCwxMDApLCB5bGltPWMoMCwwLjA2KSwgbWFpbj0gcGFzdGUoIkhpc3RvZ3JhbWEgZGUgbGEgbXVlc3RyYS4gbj0iLCBuX3NhbXBsZSkpDQpjdXJ2ZShkbm9ybSh4LCBtZWFuPTUwLCBzZCA9IDEwKSwgZnJvbT0wLCB0bz0xMDAsIGNvbD0nYmx1ZScsIGFkZD1UUlVFKQ0KDQp0ZXh0ICg4MCwgMC4wNSwgcGFzdGUoIm1lZGlhIG11ZXN0cmFsOiAiLCByb3VuZChtdWVzdHJhbF9tZWFuLDIpKSkNCnRleHQgKDgwLCAwLjA0NSwgcGFzdGUoInZhcmlhbnphIG11ZXN0cmFsIFNeMjoiLCByb3VuZChtdWVzdHJhbF92YXIsMikpKQ0KdGV4dCAoODAsIDAuMDQsIHBhc3RlKCJ2YXJpYW56YSBtdWVzdHJhbCBTXjIqOiIsIHJvdW5kKG11ZXN0cmFsX3ZhcjIsMikpKQ0KDQpgYGANCkVuIHVuIHNvbG8gZXhwZXJpbWVudG8sIG5vIGVzIGNsYXJvIGN1w6FsIGVzIGVsIHZhbG9yIGVzcGVyYWRvIGRlICRTXjIkIHkgZGUgJHtTXjJ9XiokLiBQYXJhIG9ic2VydmFyIGVsIHZhbG9yIGVzcGVyYWRvIGRlIGVzdG9zIGVzdGltYWRvcmVzIGRlYmVtb3MgcmVhbGl6YXIgZWwgZXhwZXJpbWVudG8gbXVjaGFzIHZlY2VzIChwb3IgZWplbXBsbyBtaWwgdmVjZXMpLCB5IHZlciBjdcOhbCBlcyBlbCB2YWxvciBlc3BlcmFkbyBkZSBsYSB2YXJpYW56YSBtdWVzdHJhbCwgdGVuaWVuZG8gZW4gY3VlbnRhIHF1ZSBlbCB0YW1hw7FvIGRlIGxhIG11ZXN0cmEgZXMgbl9zYW1wbGU9MjUNCg0KIyMgMi4gRGlzdHJpYnVjaW9uZXMgZGUgcHJvYmFiaWxpZGFkIGVuIFINCmBgYHtyfQ0KIyBuX3NhbXBsZT0yNQ0KYWxsX3ZhcmlhbmNlcz0gYygpDQphbGxfdmFyaWFuY2VzMiA9IGMoKQ0KDQpmb3IoayBpbiAxOjEwMDApeyAjUmVwZXRpbW9zIGVsIGV4cGVyaW1lbnRvIDEwMDAgdmVjZXMNCiAgDQogIHkgPC0gcm5vcm0obj1uX3NhbXBsZSwgbWVhbj01MCwgc2QgPSAxMCkgDQogICMgU2kgaGFjZW1vcyBuX3NhbXBsZT4xMDAsIGVsIGhpc3RvZ3JhbWEgc2UgZGViZXJpYSBhcHJveGltYXIgYSBsYSBmdW5jacOzbiBlbiBsw61uZWEgYXp1bA0KICANCiAgbXVlc3RyYWxfbWVhbiA9IG1lYW4oeSkNCiAgbXVlc3RyYWxfdmFyID0gc3VtKCh5LW1lYW4oeSkpXjIpLyhuX3NhbXBsZS0xKQ0KICBtdWVzdHJhbF92YXIyID0gc3VtKCh5LW1lYW4oeSkpXjIpLyhuX3NhbXBsZSkNCiAgDQogIGFsbF92YXJpYW5jZXMgPC0gYyhhbGxfdmFyaWFuY2VzLCBtdWVzdHJhbF92YXIpDQogIGFsbF92YXJpYW5jZXMyIDwtIGMoYWxsX3ZhcmlhbmNlczIsIG11ZXN0cmFsX3ZhcjIpDQp9DQoNCnBhc3RlKCJFbCB2YWxvciBlc3BlcmFkbyBkZSBsYSB2YXJpYW56YSAgKFNeMikgZXM6ICIsIG1lYW4oYWxsX3ZhcmlhbmNlcykpDQpwYXN0ZSgiRWwgdmFsb3IgZXNwZXJhZG8gZGUgbGEgdmFyaWFuemEgIChTXjIqKSBlczogIiwgbWVhbihhbGxfdmFyaWFuY2VzMikpDQpgYGANCiMjIDMuIEludmVzdGlnYW5kbyBsYSBjb25zdHJ1Y2Npw7NuIGRlIGxvcyBpbnRlcnZhbG9zIGRlIGNvbmZpYW56YSBjb24gZWwgbGVuZ3VhamUgZGUgcHJvZ3JhbWFjacOzbiBSDQoqQ09OQ0xVU0nDk046ICoNCk9ic2VydmUgcXVlIGVsIHZhbG9yIGVzcGVyYWRvIGRlICR7U14yfV4qJCBlcyBtZW5vciBxdWUgZWwgZGUgJFNeMiQuIEFkZW3DoXMsIGVsIHZhbG9yIGVzcGVyYWRvIGRlICRTXjIkIGVzIG3DoXMgY2VyY2FubyBhbCB2YWxvciBkZSBsYSB2YXJpYW56YSBwb2JsYWNpb25hbCAkXHNpZ21hIF4gMj0xMDAkLg0KDQpFbiBlc3RlIG5vdGVib29rIHNlIG11ZXN0cmEgbWVkaWFudGUgc2ltdWxhY2nDs24gcXVlICRTXjIkIGVzIHVuIGVzdGltYWRvciBpbnNlc2dhZG8gZGUgJFxzaWdtYV4yJCwgbWllbnRyYXMgcXVlICR7U14yfV4qJCBubyBsbyBlcy4gUGFyYSB2ZXIgdW5hIGRlbW9zdHJhY2nDs24gYW5hbMOtdGljYSBzZSBwdWVkZSByZXZpc2FyIGVsIFtFamVtcGxvIDkuMV0oaHR0cDovL2JpYmxpb3RlY2F2aXJ0dWFsLnVpcy5lZHUuY286MjE2OC8/aWw9MzM3NSZwZz0yODkpIGRlbCBsaWJybyBkZSBXYWxwb2xlLg==</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlRBTExFUjogVHV0b3JpYWwgUiDigJMgRGlzdHJpYnVjaW9uZXMgbXVlc3RyYWxlcyBlIGludGVydmFsb3MgZGUgY29uZmlhbnphIg0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyMgMS4gRnVuY2lvbmVzIGVuIFINCmBgYHtyfQ0KdmFsdWVzID0gYyg3LDUsOSwyLDEsOCwzLDQsNiwxMCkNCmlxciA8LSBmdW5jdGlvbih2KSB7DQogIHExID0gcXVhbnRpbGUodiwxLzQsbmFtZXMgPSBGQUxTRSkNCiAgcTMgPSBxdWFudGlsZSh2LDMvNCxuYW1lcyA9IEZBTFNFKQ0KICBpcXJfbGlzdD1saXN0KCJxMSI9cTEsInEzIj1xMywiZXh0Ij1xMy1xMSkNCiAgcmV0dXJuIChpcXJfbGlzdCk7DQp9DQppcXIodmFsdWVzKQ0KYGBgDQoNCiMjIDIuIERpc3RyaWJ1Y2lvbmVzIGRlIHByb2JhYmlsaWRhZCBlbiBSDQoqIEZ1bmNpb25lcyBkZSBkZW5zaWRhZCBkZSBwcm9iYWJpbGlkYWQ6DQoqIEZ1bmNpw7NuIGRlIGRpc3RyaWJ1Y2nDs24gYWN1bXVsYWRhOg0KKiBGdW5jacOzbiBjdWFudGlsIGRlIGxhIGRpc3RyaWJ1Y2nDs24NCg0KDQojIyAzLiBJbnZlc3RpZ2FuZG8gbGEgY29uc3RydWNjacOzbiBkZSBsb3MgaW50ZXJ2YWxvcyBkZSBjb25maWFuemEgY29uIGVsIGxlbmd1YWplIGRlIHByb2dyYW1hY2nDs24gUg0KKkNPTkNMVVNJw5NOOiAqDQpPYnNlcnZlIHF1ZSBlbCB2YWxvciBlc3BlcmFkbyBkZSAke1NeMn1eKiQgZXMgbWVub3IgcXVlIGVsIGRlICRTXjIkLiBBZGVtw6FzLCBlbCB2YWxvciBlc3BlcmFkbyBkZSAkU14yJCBlcyBtw6FzIGNlcmNhbm8gYWwgdmFsb3IgZGUgbGEgdmFyaWFuemEgcG9ibGFjaW9uYWwgJFxzaWdtYSBeIDI9MTAwJC4NCg0KRW4gZXN0ZSBub3RlYm9vayBzZSBtdWVzdHJhIG1lZGlhbnRlIHNpbXVsYWNpw7NuIHF1ZSAkU14yJCBlcyB1biBlc3RpbWFkb3IgaW5zZXNnYWRvIGRlICRcc2lnbWFeMiQsIG1pZW50cmFzIHF1ZSAke1NeMn1eKiQgbm8gbG8gZXMuIFBhcmEgdmVyIHVuYSBkZW1vc3RyYWNpw7NuIGFuYWzDrXRpY2Egc2UgcHVlZGUgcmV2aXNhciBlbCBbRWplbXBsbyA5LjFdKGh0dHA6Ly9iaWJsaW90ZWNhdmlydHVhbC51aXMuZWR1LmNvOjIxNjgvP2lsPTMzNzUmcGc9Mjg5KSBkZWwgbGlicm8gZGUgV2FscG9sZS4=</div>
 
 
 
