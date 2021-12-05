@@ -66,10 +66,58 @@ Estas distribuciones pueden ser:
 
 **Weibull**: weibull
 
-**W de Wilcoxon**: wilcox
+**W de Wilcoxon**: wilcox   
 
 
 ### Muestre estas funciones para 4 distribuciones de probabilidad diferentes (dos distribuciones de variables continuas y dos distribuciones de variables discretas). Use gráficas para visualizar dichas funciones.
+
+#### Distribución Discreta
+
+```{r setup}
+x <- 1:80
+par(mfrow = c(2, 3))
+plot(dbinom(x, size = 80, prob = 0.2), type = "h", lwd = 2,
+     main = "Densidad Binomial", ylab = "P(X = x)", xlab = "Número de éxitos", col = 'red')
+plot(pbinom(x, size = 80, prob = 0.2), type = 'l',ylab = "P(X = x)",
+     xlab = 'Número de éxitos', main = 'Acumulada Binomial', col = 'red')
+plot(qbinom(seq(0, 1, 0.001), size = 80, prob = 0.2), type='l',lwd = 2,
+     main = 'Cuantil Binomial', ylab = 'Número de éxitos', xlab = 'P(X = x)', col = 'red', xaxt = "n")
+axis(1, labels = seq(0, 1, 0.1), at = 0:10 * 100)
+lambda <- 5
+plot(dpois(x, lambda), type = "h", lwd = 2,
+     main = "Densidad Poisson",
+     ylab = "P(X = x)", xlab = "Número de eventos", col = 'blue')
+plot(ppois(x, lambda), type = "l", lwd = 2,
+     main = "Acumulada Poisson",
+     ylab = "P(X = x)", xlab = "Número de eventos", col = 'blue')
+plot(qpois(seq(0, 1, 0.001), lambda), type = "l", lwd = 2,
+     main = "Cuantil Poisson",
+     ylab = "P(X = x)", xlab = "Número de eventos", col = 'blue', xaxt = "n")
+axis(1, labels = seq(0, 1, 0.1), at = 0:10 * 100)
+
+```
+#### Distribución continua
+
+```{r}
+par(mfrow = c(2, 3))
+x <- seq(-4, 8, 0.1)
+plot(x,dnorm(x, mean = 0, sd = 1), type = "l",
+     ylim = c(0, 0.6), lwd = 2, col = "green",
+     main = 'Densidad Normal', xlab = 'Número de éxitos', ylab = 'P(X = x)')
+plot(x,pnorm(x, mean = 0, sd = 1), type = 'l',
+     col = "green",main = 'Normal Acumulada', xlab = 'Número de éxitos', ylab = 'P(X = x)')
+plot(qnorm(seq(0, 1, 0.001), mean = 0, sd = 1),
+     type = 'l', xaxt = "n", col = "green",main = 'Cuantil Normal', ylab = 'Número de éxitos', xlab = 'P(X = x)')
+axis(1, labels = seq(0, 1, 0.1), at = 0:10 * 100)
+
+plot(x,dt(y,df = 5), type = 'l', col = "orange",
+     main = 'Densidad T', xlab = 'Número de éxitos', ylab = 'P(X = x)')
+plot(x,pt(y,df = 5), type = 'l', col = "orange",
+     main = 'T acumulada', xlab = 'Número de éxitos', ylab = 'P(X = x)')
+plot(qt(seq(0, 1, 0.001),df = 5), type = 'l', xaxt = "n", col = "orange",
+     main = 'Cuantil T', ylab = 'Número de éxitos', xlab = 'P(X = x)')
+axis(1, labels = seq(0, 1, 0.1), at = 0:10 * 100)
+```
 
 ## 3. Investigando la construcción de los intervalos de confianza con el lenguaje de programación R
 (a) Extraiga 10000 muestras, cada una de 20 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
