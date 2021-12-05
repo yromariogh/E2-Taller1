@@ -25,13 +25,51 @@ iqr(values)
 ```
 
 ## 2. Distribuciones de probabilidad en R
-* Funciones de densidad de probabilidad:
-* Función de distribución acumulada:
-* Función cuantil de la distribución
+### Describir la función de densidad de probabilidad, función de distribución acumulada y función cuantil
+* **Funciones de densidad de probabilidad:** Las funciones de densidad de probabilidad describen la probabilidad de observar cierto valor dentro de una muestra dada. Estas funciones se dividen en distribuciones discretas y continuas; la primera solo toma valores positivos en un conjunto de posibles valores, mientras que la segunda acepta valores tanto positivos como negativos.
+* **Función de distribución acumulada:** La función de distribución acumulada describe la probabilidad de que una variable dentro de una muestra obtenga un valor n.
+* **Función cuantil de la distribución:** Se le conoce como la función inversa de la función de distribución acumulada, debido a que indica el valor de la variable aleatoria para el cual la probabilidad de que esa variable aleatoria sea menor o igual a dicho valor sea la probabilidad dada.
 
-¿Qué funciones existen en R que permitan obtener valores asociadas a esas funciones?
+### ¿Qué funciones existen en R que permitan obtener valores asociadas a esas funciones?
 
-Muestre estas funciones para 4 distribuciones de probabilidad diferentes (dos distribuciones de variables continuas y dos distribuciones de variables discretas). Use gráficas para visualizar dichas funciones.
+Las funciones para la función de densidad, la función acumulativa y la función cuantil deben aplicarse sobre una distribución x, siendo **d**x, **p**x y **q**x respectivamente.
+
+Estas distribuciones pueden ser:
+
+#### Distribuciones Discretas:
+
+**Binomial**: binom
+
+**Poisson**: pois
+
+**Geométrica**: geom
+
+**Hipergeométrica**: hyper
+
+**Binomial negativa**: nbinom
+
+#### Distribuciones Continuas: 
+
+**Uniforme**: unif
+
+**Normal**: norm
+
+**t student**: t
+
+**F Fisher**: F
+
+**Chi-Cuadrado**: chisq
+
+**Exponencial**: exp
+
+**Gamma**: gamma
+
+**Weibull**: weibull
+
+**W de Wilcoxon**: wilcox
+
+
+### Muestre estas funciones para 4 distribuciones de probabilidad diferentes (dos distribuciones de variables continuas y dos distribuciones de variables discretas). Use gráficas para visualizar dichas funciones.
 
 ## 3. Investigando la construcción de los intervalos de confianza con el lenguaje de programación R
 (a) Extraiga 10000 muestras, cada una de 20 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
