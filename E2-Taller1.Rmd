@@ -95,7 +95,7 @@ n_ci <- function(x,samples,obs,ci) {
   repeat{combined=replicate(samples,sample(x,size=obs))
     if(eq_in_row(combined)==0){break}}
   for (i in 1:samples){
-    z=confint(lm(combined[,i]~1),level=ci-0.1)
+    z=confint(lm(combined[,i]~1),level=ci)
     if (media>=z[1] & media<=z[2]){cont=cont+1}}
   return(cont/samples)
 }
