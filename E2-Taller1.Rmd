@@ -72,10 +72,46 @@ Estas distribuciones pueden ser:
 ### Muestre estas funciones para 4 distribuciones de probabilidad diferentes (dos distribuciones de variables continuas y dos distribuciones de variables discretas). Use gráficas para visualizar dichas funciones.
 
 ## 3. Investigando la construcción de los intervalos de confianza con el lenguaje de programación R
+```{r}
+data=read.table("abalone.data",sep=",")
+
+t_ci <- function(x,samples,obs,ci) {
+  media=mean(x)
+  cont=0
+  combined=replicate(samples,sample(x,size=obs))
+  for (i in 1:samples)
+  {
+    z=t.test(combined[,i], conf.level = ci)
+    if (media>=z$conf.int[1] & media<=z$conf.int[2])
+    {
+      cont=cont+1
+    }
+  }
+  return(cont/samples)
+}
+```
+
 (a) Extraiga 10000 muestras, cada una de 20 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
+```{r}
+  a=t_ci(data$V2,10000,20,0.9)
+```
+
+
 (b) Extraiga 10000 muestras, cada una de 10 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
+```{r}
+  b=t_ci(data$V2,10000,10,0.9)
+```
 (c) Extraiga 10000 muestras, cada una de 10 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use una distribución normal (que NO se debería usar porque la muestra es demasiado pequeña!). Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
+```{r}
+  c=n_ci(data$V2,10000,10,0.9)
+```
 (d) Extraiga 10000 muestras, cada una de 3 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
+```{r}
+  d=t_ci(data$V2,10000,3,0.9)
+```
 (e) Extraiga 10000 muestras, cada una de 3 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use una distribución normal (que NO se debería usar porque la muestra es demasiado pequeña!). Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
+```{r}
+  e=n_ci(data$V2,10000,3,0.9)
+```
 
 ## 4. Conclusiones
