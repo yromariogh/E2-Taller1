@@ -36,7 +36,7 @@ iqr(values)
 
 ### ¿Qué funciones existen en R que permitan obtener valores asociadas a esas funciones?
 
-Las funciones para la función de densidad, la función acumulativa y la función cuantil deben aplicarse sobre una distribución x, siendo **d**x, **p**x y **q**x respectivamente.
+Las funciones para la función de densidad, la función acumulativa, la función cuantil y la creación de valores aleatorios que sigan cierta distribución, deben aplicarse sobre una distribución x, siendo **d**x, **p**x, **q**x y **r**x, respectivamente.
 
 Estas distribuciones pueden ser:
 
@@ -137,92 +137,58 @@ data=read.table("abalone.data",sep=",")
 ```
 Se crea la función principal: **mu_ci(x,dist,n_samples,n_obs,ci)**, la cual recibe como parámetros un vector **x** (que en este contexto serán los valores de la columna "length" del dataframe abalone), el caracter **dist** cuyo valor puede ser 't' o 'n' dependiendo de si se quiere muestrear siguiendo la distribucion t o la normal, **n_samples** hace referencia al número de muestras (que en este caso será siempre 10000), y **n_obs** almacena la cantidad de observaciones (que en este caso tomará valores de 20, 10 y 3), y **ci** se refiere al intervalo de confianza que se desea (0.9).
 
-Internamente, en la función se halla la media poblacional **mu** del vector x, se inicializa un contador **cont**. Se guardan en la matriz **combined** el conjunto de todas las muestras (columnas) con sus respectivas observaciones (filas), haciendo uso de la función **sample()** para sacar una muestra con cierto tamaño **n_size** y la función **replicate()** para generar la cantidad **n_samples** de muestras, todo esto se repite hasta que no exista alguna columna donde todas sus filas tengan el mismo valor para procurar el correcto funcionamiento de **t.test()** para la obtención del intervalo de confianza en el caso de una distribución t de Student y de **confint()** para una distribución normal, se usa la función **lm()** como una forma de indicarle a la anterior función que se intenta aproximar a una distribución normal. Finalmente se retorna la fracción de las muestras donde la media poblacional **mu** se encuentra dentro de los intervalos de confianza respectivos (aumentando el contador cada vez que esto pasaba y diviendolo finalmente en el numero de muestras).
+Internamente, en la función se halla la media poblacional **p_mean** del vector x, se inicializa un contador **cont** en cero. Se separa la obtención del valor donde las distribuciones tienen una probabilidad de 0.05 (ya que se quiere un intervalo de confianza **ci** de 0.9 y este valor es el alfa/2 con alfa=1-ci).
 ```{r}
 mu_ci <- function(x,dist,n_samples,n_obs,ci){
-  mu=mean(x);  cont=0;
-  repeat{combined=replicate(n_samples,sample(x,size=n_obs))
-    if(eq_in_row(combined)==0){break}}
-  for (i in 1:n_samples){
-    if (dist=='t'){
-      z=t.test(combined[,i], conf.level = ci)
-      if (mu>=z$conf.int[1] & mu<=z$conf.int[2]){cont=cont+1}}
-    if(dist=='n'){
-      z=confint(lm(combined[,i]~1),level=ci)
-      if (mu>=z[1] & mu<=z[2]){cont=cont+1}}}
-  return(cont/n_samples)
+  p_mean=mean(x);  cont=0; #Media poblacional y contador de intervalos que cumplen
+  for (i in 1:n_samples){ #Itera hasta crear las n_samples muestras
+    m=sample(x,n_obs) #Muestra con n_obs de observaciones
+    m_mean=mean(m) #Media muestral
+    m_sd=sd(m) #Desviacion estándar muestral
+    if (dist=='n'){
+      q=qnorm((1-ci)/2,lower.tail=0)} #Valor donde la prob. es 0.05 en la dist. normal
+    if(dist=='t'){
+      q=qt((1-ci)/2,df=n_obs-1,lower.tail=0)} #Valor donde la prob. es 0.05 en la dist. t
+    l_lim=m_mean-(q*(m_sd/sqrt(n_obs))) #Limite inferior del intervalo de confianza
+    u_lim=m_mean+(q*(m_sd/sqrt(n_obs))) #Limite superior del intervalo de confianza
+    if (p_mean>=l_lim && p_mean<=u_lim)
+      {cont=cont+1}} #Conteo de casos donde la media poblacional está dentro del I. de C.
+  return(cont/n_samples) #Retorno de la fraccion a analizar
 }
 ```
 
-Se crea la funcion **eq_in_row(matrix)** para verificar que no exista alguna columna donde todas sus filas tengan el mismo valor. Haciendo uso de la función **unique()** que retorna un vector con los elementos duplicados de cada fila eliminados y se verfica con la función **length()** que su tamaño sea uno (que todos las columnas tengan el mismo valor) reproduciendo este proceso para cada columna mediante la función **apply()** y usará la función **sum()** para conocer la cantidad de columnas donde todos sus valores son iguales para retornar dicho valor **s** (aunque lo deseable es que este valor sea cero, para que no fallen las funciones **t.test()** ni **confint()**).
-```{r}
-eq_in_row <- function(matrix) {
-  s=sum(apply(matrix, 2, function(a) length(unique(a))==1))
-  return(s)
-}
-```
-      En los siguientes casos se pasará como argumento el vector data$V2, que es la segunda colummna del dataframe abalone.data y contiene los valores de "length" que se quieren estudiar, así como se usará la función creada **mu_ci(x,dist,n_samples,n_obs,ci)**. Para un mejor análisis de los resultados, se realizarán 100 ejecuciones donde en cada una de ellas se muestrea 10000 veces, con el fin de sacarle un promedio a las fracciones y comparar resultados, ya que cada ejecución que se haga varía un poco los resultados de la fracción deseada.
+En los siguientes casos se pasará como argumento el vector data$V2, que es la segunda colummna del dataframe abalone.data y contiene los valores de "length" que se quieren estudiar, así como se usará la función creada **mu_ci(x,dist,n_samples,n_obs,ci)**.
 
 (a) Extraiga 10000 muestras, cada una de 20 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
 
 ```{r}
-  prom=0
-  for (i in 1:100)
-  {
-    a=mu_ci(data$V2,'t',10000,20,0.9)
-    prom=prom+a/100
-  }
-  prom 
+a=mu_ci(data$V2,'t',10000,20,0.9); a
 ```
-      Como se puede observar, en este caso, la fracción de las 10000 muestras donde la verdadera media poblacional se encuentra dentro del intervalo de confianza del 90%, siguiendo una distribución t de Student (considerando que esta es la recomendada para casos en que la cantidad de observaciones es menor a 30) y teniendo cada una de ellas 20 registros es cercano al 0.9, y al ejecutarlo varias veces se puede observar que efectivamente, en promedio, dicha fracción tendrá un valor de muy cercano a 0.9, que es 0.896848.
+      Como se puede observar, en este caso, la fracción de las 10000 muestras donde la verdadera media poblacional se encuentra dentro del intervalo de confianza del 90%, siguiendo una distribución t de Student (considerando que esta es la recomendada para casos en que la cantidad de observaciones es menor a 30) y teniendo cada una de ellas 20 registros es cercano al 0.9, y dicha fracción tendrá un valor de muy cercano a 0.9, que es `r a`.
 
 (b) Extraiga 10000 muestras, cada una de 10 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
 ```{r}
-  prom=0
-  for (i in 1:100)
-  {
-    b=mu_ci(data$V2,'t',10000,10,0.9)
-    prom=prom+b/100
-  }
-  prom
+b=mu_ci(data$V2,'t',10000,10,0.9); b
 ```
-      Este caso difiere del anterior solo en la cantidad de observaciones que tiene cada una de las 10000 muestras, reduciendo dicha cantidad a la mitad, aunque ello no parece variar en gran medida la fracción de muestras donde la media poblaciones se encuentra dentro de dicho intervalo de confianza de 0.9 pero si reduce un poco su promedio, ya que llega hasta 0.892342, bajando 0.004506, al realizar 100 ejecuciones. 
+      Este caso difiere del anterior solo en la cantidad de observaciones que tiene cada una de las 10000 muestras, reduciendo dicha cantidad a la mitad, aunque ello no parece variar en gran medida la fracción de muestras donde la media poblaciones se encuentra dentro de dicho intervalo de confianza de 0.9 pero si reduce un poco su promedio, ya que llega hasta `r b`, bajando `r toString(a-b)`. 
 
 (c) Extraiga 10000 muestras, cada una de 10 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use una distribución normal (que NO se debería usar porque la muestra es demasiado pequeña!). Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
 ```{r}
-  prom=0
-  for (i in 1:100)
-  {
-    c=mu_ci(data$V2,'n',10000,10,0.9)
-    prom=prom+c/100
-  }
-  prom
+c=mu_ci(data$V2,'n',10000,10,0.9); c
 ```
-      Teniendo en cuenta que para una cantidad de observaciones menor a 30 no es recomendable hacer uso de una distribución normal, se puede observar que la fracción de muestras donde la media poblacional se encuentra dentro del intervalo de confianza tiene un valor cercano al esperado de 0.9, aunque al realizar varias iteraciones su valor promedio es incluso menor que en los casos anteriores, como era de esperarse, y dicho valor es 0.891425, 0.000917 por debajo del caso de la distribución t de Student.
+      Teniendo en cuenta que para una cantidad de observaciones menor a 30 no es recomendable hacer uso de una distribución normal, se puede observar que la fracción de muestras donde la media poblacional se encuentra dentro del intervalo de confianza tiene un valor cercano al esperado de 0.9, aunque al realizar varias iteraciones su valor promedio es incluso menor que en los casos anteriores, como era de esperarse, y dicho valor es `r c`, `r toString(b-c)`(en caso de ser negativo es debido a que aumentó, aunque no es lo esperado ni lo que pasa todo el tiempo) por debajo del caso de la distribución t de Student.
 
 (d) Extraiga 10000 muestras, cada una de 3 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
 ```{r}
-  prom=0
-  for (i in 1:100)
-  {
-    d=mu_ci(data$V2,'t',10000,3,0.9)
-    prom=prom+d/100
-  }
-  prom
+d=mu_ci(data$V2,'t',10000,3,0.9); d
 ```
-      Al disminuir aún más la cantidad de observaciones por cada muestra, es normal que la fracción esperada se aleje más del 0.9 deseado, pues es poco probable que las 3 observaciones de cada muestra sean significativas teniendo una población de 4177, y que su selección fue de manera aleatoria con reemplazo. Dicha fracción tiene un valor promedio de 0.878658 considerando 100 ejecuciones, baja 0.013584 con respecto al caso de 10 observaciones y distribución t de Student (b).
+      Al disminuir aún más la cantidad de observaciones por cada muestra, es normal que la fracción esperada se aleje más del 0.9 deseado, pues es poco probable que las 3 observaciones de cada muestra sean significativas teniendo una población de 4177, y que su selección fue de manera aleatoria con reemplazo. Dicha fracción tiene un valor de `r d`, baja `r toString(b-d)` con respecto al caso de 10 observaciones y distribución t de Student (b).
 
 (e) Extraiga 10000 muestras, cada una de 3 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use una distribución normal (que NO se debería usar porque la muestra es demasiado pequeña!). Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
 ```{r}
-  prom=0
-  for (i in 1:100)
-  {
-    e=mu_ci(data$V2,'n',10000,3,0.9)
-    prom=prom+e/100
-  }
-  prom
+e=mu_ci(data$V2,'n',10000,3,0.9); e
 ```
-    Se esperaba que este caso obtuviera los peores resultados posibles, ya que se usa una distribución normal cuando no se debería y la cantidad de observaciones por muestra es muy bajita, el valor de la fracción a analizar para 100 iteraciones es, en promedio, 0.878513, si se analiza con respecto al caso inmediatamente anterior (3 observaciones y t de Student) se observa un decremento de 0.000145, y si se compara con el caso de 10 observaciones y también distribución normal, en promedio, disminuye 0.012912.
+    Se esperaba que este caso obtuviera los peores resultados posibles, ya que se usa una distribución normal cuando no se debería y la cantidad de observaciones por muestra es muy bajita, el valor de la fracción a analizar es `r e`, si se analiza con respecto al caso inmediatamente anterior (3 observaciones y t de Student) se observa un decremento de `r toString(d-e)`, y si se compara con el caso de 10 observaciones y también distribución normal, en promedio, disminuye `r toString(c-e)`.
 ## 4. Conclusiones
 * Se pudo evidenciar que a medida que se reducía la cantidad de observaciones en cada muestra, disminuía también la fracción de las muestras donde la verdadera media poblacional se encuentra dentro del intervalo de confianza definido, ya que se tienen valores que no representan del todo a la población.
 * Se logró comprobar empirícamente que en casos de menores observaciones, la distribución que mejor modela las muestras es la distribución t de Student, confirmando la teoría de que para casos en que se desconoce la varianza poblacional y la cantidad de observaciones es menor a 30, dicha distribución supera a la distribución normal.
