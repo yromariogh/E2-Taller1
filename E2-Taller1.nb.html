@@ -370,13 +370,97 @@ axis(1, labels = seq(0, 1, 0.1), at = 0:10 * 100)</code></pre>
 </div>
 <div id="investigando-la-construcción-de-los-intervalos-de-confianza-con-el-lenguaje-de-programación-r" class="section level2">
 <h2>3. Investigando la construcción de los intervalos de confianza con el lenguaje de programación R</h2>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuZGF0YT1yZWFkLnRhYmxlKFwiYWJhbG9uZS5kYXRhXCIsc2VwPVwiLFwiKVxuXG5lcV9pbl9yb3cgPC0gZnVuY3Rpb24obWF0cml4KSB7XG4gIHM9c3VtKGFwcGx5KG1hdHJpeCwgMiwgZnVuY3Rpb24oYSkgbGVuZ3RoKHVuaXF1ZShhKSk9PTEpLCBuYS5ybSA9IFRSVUUpXG4gIHJldHVybihzKVxufVxuXG5tdV9jaSA8LSBmdW5jdGlvbih4LGRpc3Qsbl9zYW1wbGVzLG5fb2JzLGNpKXtcbiAgbWVkaWE9bWVhbih4KTsgIGNvbnQ9MDtcbiAgcmVwZWF0e2NvbWJpbmVkPXJlcGxpY2F0ZShuX3NhbXBsZXMsc2FtcGxlKHgsc2l6ZT1uX29icykpXG4gICAgaWYoZXFfaW5fcm93KGNvbWJpbmVkKT09MCl7YnJlYWt9fVxuICBmb3IgKGkgaW4gMTpuX3NhbXBsZXMpe1xuICAgIGlmIChkaXN0PT0ndCcpe1xuICAgICAgej10LnRlc3QoY29tYmluZWRbLGldLCBjb25mLmxldmVsID0gY2kpXG4gICAgICBpZiAobWVkaWE+PXokY29uZi5pbnRbMV0gJiBtZWRpYTw9eiRjb25mLmludFsyXSl7Y29udD1jb250KzF9fVxuICAgIGlmKGRpc3Q9PSduJyl7XG4gICAgICB6PWNvbmZpbnQobG0oY29tYmluZWRbLGldfjEpLGxldmVsPWNpKVxuICAgICAgaWYgKG1lZGlhPj16WzFdICYgbWVkaWE8PXpbMl0pe2NvbnQ9Y29udCsxfX19XG4gIHJldHVybihjb250L25fc2FtcGxlcylcbn1cbmBgYCJ9 -->
+<pre class="r"><code>data=read.table(&quot;abalone.data&quot;,sep=&quot;,&quot;)
+
+eq_in_row &lt;- function(matrix) {
+  s=sum(apply(matrix, 2, function(a) length(unique(a))==1), na.rm = TRUE)
+  return(s)
+}
+
+mu_ci &lt;- function(x,dist,n_samples,n_obs,ci){
+  media=mean(x);  cont=0;
+  repeat{combined=replicate(n_samples,sample(x,size=n_obs))
+    if(eq_in_row(combined)==0){break}}
+  for (i in 1:n_samples){
+    if (dist==&#39;t&#39;){
+      z=t.test(combined[,i], conf.level = ci)
+      if (media&gt;=z$conf.int[1] &amp; media&lt;=z$conf.int[2]){cont=cont+1}}
+    if(dist==&#39;n&#39;){
+      z=confint(lm(combined[,i]~1),level=ci)
+      if (media&gt;=z[1] &amp; media&lt;=z[2]){cont=cont+1}}}
+  return(cont/n_samples)
+}</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 <ol style="list-style-type: lower-alpha">
 <li>Extraiga 10000 muestras, cada una de 20 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?</li>
+</ol>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuICBhPW11X2NpKGRhdGEkVjIsJ3QnLDEwMDAwLDIwLDAuOSk7IGFcbmBgYCJ9 -->
+<pre class="r"><code>  a=mu_ci(data$V2,&#39;t&#39;,10000,20,0.9); a</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuODk0NlxuIn0= -->
+<pre><code>[1] 0.8946</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<ol start="2" style="list-style-type: lower-alpha">
 <li>Extraiga 10000 muestras, cada una de 10 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?</li>
+</ol>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuICBiPW11X2NpKGRhdGEkVjIsJ3QnLDEwMDAwLDEwLDAuOSk7IGJcbmBgYCJ9 -->
+<pre class="r"><code>  b=mu_ci(data$V2,&#39;t&#39;,10000,10,0.9); b</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuODkzN1xuIn0= -->
+<pre><code>[1] 0.8937</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<ol start="3" style="list-style-type: lower-alpha">
 <li>Extraiga 10000 muestras, cada una de 10 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use una distribución normal (que NO se debería usar porque la muestra es demasiado pequeña!). Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?</li>
+</ol>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuICBjPW11X2NpKGRhdGEkVjIsJ24nLDEwMDAwLDEwLDAuOSk7IGNcbmBgYCJ9 -->
+<pre class="r"><code>  c=mu_ci(data$V2,&#39;n&#39;,10000,10,0.9); c</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuODk0N1xuIn0= -->
+<pre><code>[1] 0.8947</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<ol start="4" style="list-style-type: lower-alpha">
 <li>Extraiga 10000 muestras, cada una de 3 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?</li>
+</ol>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuICBkPW11X2NpKGRhdGEkVjIsJ3QnLDEwMDAwLDMsMC45KTsgZFxuYGBgIn0= -->
+<pre class="r"><code>  d=mu_ci(data$V2,&#39;t&#39;,10000,3,0.9); d</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuODc5MlxuIn0= -->
+<pre><code>[1] 0.8792</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<ol start="5" style="list-style-type: lower-alpha">
 <li>Extraiga 10000 muestras, cada una de 3 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use una distribución normal (que NO se debería usar porque la muestra es demasiado pequeña!). Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?</li>
 </ol>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuICBlPW11X2NpKGRhdGEkVjIsJ24nLDEwMDAwLDMsMC45KTsgZVxuYGBgIn0= -->
+<pre class="r"><code>  e=mu_ci(data$V2,&#39;n&#39;,10000,3,0.9); e</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIDAuODg2NlxuIn0= -->
+<pre><code>[1] 0.8866</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 </div>
 <div id="conclusiones" class="section level2">
 <h2>4. Conclusiones</h2>
