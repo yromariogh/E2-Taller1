@@ -241,16 +241,6 @@ iqr &lt;- function(v) {
 }
 iqr(values)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiJHExXG5bMV0gMy4yNVxuXG4kcTNcblsxXSA3Ljc1XG5cbiRleHRcblsxXSA0LjVcbiJ9 -->
-<pre><code>$q1
-[1] 3.25
-
-$q3
-[1] 7.75
-
-$ext
-[1] 4.5</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -329,6 +319,7 @@ axis(1, labels = seq(0, 1, 0.1), at = 0:10 * 100)
 <!-- rnb-plot-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>En las siguientes gráficas se logra observar la función de densidad, función acumulativa y función cuantil de 2 distribuciones discretas, siendo estas la <strong>distribución binomial y la distribución Poisson.</strong> Para estas distribuciones se inicia estableciendo un margen de valores en el eje x <strong>(x &lt;- 1:80)</strong> y un lienzo para un total de 6 gráficas <strong>(par(mfrow = c(2, 3)))</strong>, posterior a esto, se grafican la función de densidad, función acumulativa y la función cuantil de una distribución binomial con un número de <strong>80 ensayos</strong> con una probabilidad de exito de <strong>0.2</strong> mediante <strong>dbinom(…), pbinom(…) y qbinom(…)</strong> respectivamente, despues se grafican la función de densidad, función acumulativa y la función cuantil de una distribución de Poisson con una media de <strong>5 eventos</strong> mediante <strong>dpois(…), ppois(…) y qpois(…)</strong> respectivamente. Dichas funciones serán aplicadas dentro de la función <strong>plot()</strong>, la cual permite el dibujo de estas.</p>
 </div>
 <div id="distribución-continua" class="section level4">
 <h4>Distribución continua</h4>
@@ -365,6 +356,7 @@ axis(1, labels = seq(0, 1, 0.1), at = 0:10 * 100)</code></pre>
 <!-- rnb-plot-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
+<p>En las siguientes gráficas se logra observar la función de densidad, función acumulativa y función cuantil de 2 distribuciones continuas, siendo estas la <strong>distribución normal y la distribución T-Student.</strong> Para estas distribuciones se inicia estableciendo un margen de valores en el eje x <strong>x &lt;- seq(-4, 8, 0.1)</strong> y un lienzo para un total de 6 gráficas <strong>(par(mfrow = c(2, 3)))</strong>, posterior a esto, se grafican la función de densidad, función acumulativa y la función cuantil de una distribución Normal con una <strong>media de 0 y una desviación estandar de 1</strong> mediante <strong>dnorm(…), pnorm(…) y qnorm(…)</strong> respectivamente, despues se grafican la función de densidad, función acumulativa y la función cuantil de una distribución T student con <strong>5 grados de libertad</strong> mediante <strong>dt(…), pt(…) y qt(…)</strong> respectivamente. Dichas funciones serán aplicadas dentro de la función <strong>plot()</strong>, la cual permite el dibujo de estas.</p>
 </div>
 </div>
 </div>

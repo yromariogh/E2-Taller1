@@ -96,6 +96,10 @@ plot(qpois(seq(0, 1, 0.001), lambda), type = "l", lwd = 2,
 axis(1, labels = seq(0, 1, 0.1), at = 0:10 * 100)
 
 ```
+
+En las siguientes gráficas se logra observar la función de densidad, función acumulativa y función cuantil de 2 distribuciones discretas, siendo estas la **distribución binomial y la distribución Poisson.** 
+Para estas distribuciones se inicia estableciendo un margen de valores en el eje x **(x <- 1:80)** y un lienzo para un total de 6 gráficas **(par(mfrow = c(2, 3)))**, posterior a esto, se grafican la función de densidad, función acumulativa y la función cuantil de una distribución binomial con un número de **80 ensayos** con una probabilidad de exito de **0.2** mediante **dbinom(...), pbinom(...) y qbinom(...)** respectivamente, despues se grafican la función de densidad, función acumulativa y la función cuantil de una distribución de Poisson con una media de **5 eventos** mediante **dpois(...), ppois(...) y qpois(...)** respectivamente. Dichas funciones serán aplicadas dentro de la función **plot()**, la cual permite el dibujo de estas.
+
 #### Distribución continua
 
 ```{r}
@@ -118,6 +122,9 @@ plot(qt(seq(0, 1, 0.001),df = 5), type = 'l', xaxt = "n", col = "orange",
      main = 'Cuantil T', ylab = 'Número de éxitos', xlab = 'P(X = x)')
 axis(1, labels = seq(0, 1, 0.1), at = 0:10 * 100)
 ```
+
+En las siguientes gráficas se logra observar la función de densidad, función acumulativa y función cuantil de 2 distribuciones continuas, siendo estas la **distribución normal y la distribución T-Student.** 
+Para estas distribuciones se inicia estableciendo un margen de valores en el eje x **x <- seq(-4, 8, 0.1)** y un lienzo para un total de 6 gráficas **(par(mfrow = c(2, 3)))**, posterior a esto, se grafican la función de densidad, función acumulativa y la función cuantil de una distribución Normal con una **media de 0 y una desviación estandar de 1** mediante **dnorm(...), pnorm(...) y qnorm(...)** respectivamente, despues se grafican la función de densidad, función acumulativa y la función cuantil de una distribución T student con **5 grados de libertad** mediante **dt(...), pt(...) y qt(...)** respectivamente. Dichas funciones serán aplicadas dentro de la función **plot()**, la cual permite el dibujo de estas.
 
 ## 3. Investigando la construcción de los intervalos de confianza con el lenguaje de programación R
 Se hace uso de la función read.table de R, para leer el dataframe abalone.data (siendo .data el tipo de archivo), usando como separador a la coma y cuyo nombre interno será data (contiene 4177 registros y 9 columnas).
