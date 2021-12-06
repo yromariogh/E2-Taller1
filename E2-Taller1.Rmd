@@ -126,7 +126,7 @@ data=read.table("abalone.data",sep=",")
 ```
 Se crea la función principal: **mu_ci(x,dist,n_samples,n_obs,ci)**, la cual recibe como parámetros un vector **x** (que en este contexto serán los valores de la columna "length" del dataframe abalone), el caracter **dist** cuyo valor puede ser 't' o 'n' dependiendo de si se quiere muestrear siguiendo la distribucion t o la normal, **n_samples** hace referencia al número de muestras (que en este caso será siempre 10000), y **n_obs** almacena la cantidad de observaciones (que en este caso tomará valores de 20, 10 y 3), y **ci** se refiere al intervalo de confianza que se desea (0.9).
 
-Internamente, en la función se halla la media poblacional **mu** del vector x, se inicializa un contador **cont**. Se guardan en la matriz **combined** el conjunto de todas las muestras (columnas) con sus respectivas observaciones (filas), haciendo uso de la función **sample()** para sacar una muestra con cierto tamaño **n_size** y la función **replicate()** para generar la cantidad **n_samples** de muestras, todo esto se repite hasta que no exista alguna columna donde todas sus filas tengan el mismo valor para procurar el correcto funcionamiento de **t.test()** para la obtención del intervalo de confianza en el caso de una distribución t de Student y de **confint()** para una distribución normal. Finalmente se retorna la fracción de las muestras donde la media poblacional **mu** se encuentra dentro de los intervalos de confianza respectivos (aumentando el contador cada vez que esto pasaba y diviendolo finalmente en el numero de muestras).
+Internamente, en la función se halla la media poblacional **mu** del vector x, se inicializa un contador **cont**. Se guardan en la matriz **combined** el conjunto de todas las muestras (columnas) con sus respectivas observaciones (filas), haciendo uso de la función **sample()** para sacar una muestra con cierto tamaño **n_size** y la función **replicate()** para generar la cantidad **n_samples** de muestras, todo esto se repite hasta que no exista alguna columna donde todas sus filas tengan el mismo valor para procurar el correcto funcionamiento de **t.test()** para la obtención del intervalo de confianza en el caso de una distribución t de Student y de **confint()** para una distribución normal, se usa la función **lm()** como una forma de indicarle a la anterior función que se intenta aproximar a una distribución normal. Finalmente se retorna la fracción de las muestras donde la media poblacional **mu** se encuentra dentro de los intervalos de confianza respectivos (aumentando el contador cada vez que esto pasaba y diviendolo finalmente en el numero de muestras).
 ```{r}
 mu_ci <- function(x,dist,n_samples,n_obs,ci){
   mu=mean(x);  cont=0;
@@ -142,6 +142,7 @@ mu_ci <- function(x,dist,n_samples,n_obs,ci){
   return(cont/n_samples)
 }
 ```
+
 Se crea la funcion **eq_in_row(matrix)** para verificar que no exista alguna columna donde todas sus filas tengan el mismo valor. Haciendo uso de la función **unique()** que retorna un vector con los elementos duplicados de cada fila eliminados y se verfica con la función **length()** que su tamaño sea uno (que todos las columnas tengan el mismo valor) reproduciendo este proceso para cada columna mediante la función **apply()** y usará la función **sum()** para conocer la cantidad de columnas donde todos sus valores son iguales para retornar dicho valor **s** (aunque lo deseable es que este valor sea cero, para que no fallen las funciones **t.test()** ni **confint()**).
 ```{r}
 eq_in_row <- function(matrix) {
@@ -149,38 +150,66 @@ eq_in_row <- function(matrix) {
   return(s)
 }
 ```
-
+      En los siguientes casos se pasará como argumento el vector data$V2, que es la segunda colummna del dataframe abalone.data y contiene los valores de "length" que se quieren estudiar, así como se usará la función creada **mu_ci(x,dist,n_samples,n_obs,ci)**. Para un mejor análisis de los resultados, se realizarán 100 ejecuciones donde en cada una de ellas se muestrea 10000 veces, con el fin de sacarle un promedio a las fracciones y comparar resultados, ya que cada ejecución que se haga varía un poco los resultados de la fracción deseada. También se dejará un comentario donde se evidencie como se puede hacer una sola ejecución del muestreo.
 
 (a) Extraiga 10000 muestras, cada una de 20 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
 
-      En este y los siguientes casos se pasará como argumento el vector data$V2, que es la segunda colummna del dataframe abalone y contiene los valores de "length" que se quieren estudiar, así como se usará la función creada **mu_ci(x,dist,n_samples,n_obs,ci)**.
 ```{r}
-  a=mu_ci(data$V2,'t',10000,20,0.9); a
+  prom=0
+  for (i in 1:100)
+  {
+    a=mu_ci(data$V2,'t',10000,20,0.9)
+    prom=prom+a/100
+  }
+  prom 
 ```
-      Como se puede observar, en este caso, la fracción de las 10000 muestras donde la verdadera media poblacional se encuentra dentro del intervalo de confianza del 90%, siguiendo una distribución t de Student (considerando que esta es la recomendada para casos en que la cantidad de observaciones es menor a 30) y teniendo cada una de ellas 20 registros es cercano al 0.9, y al ejecutarlo varias veces se puede observar que efectivamente, en promedio, dicha fracción tendrá un valor de 0.9.
+      Como se puede observar, en este caso, la fracción de las 10000 muestras donde la verdadera media poblacional se encuentra dentro del intervalo de confianza del 90%, siguiendo una distribución t de Student (considerando que esta es la recomendada para casos en que la cantidad de observaciones es menor a 30) y teniendo cada una de ellas 20 registros es cercano al 0.9, y al ejecutarlo varias veces se puede observar que efectivamente, en promedio, dicha fracción tendrá un valor de muy cercano a 0.9, que es 0.896381.
 
 (b) Extraiga 10000 muestras, cada una de 10 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
 ```{r}
-  b=mu_ci(data$V2,'t',10000,10,0.9); b
+  prom=0
+  for (i in 1:100)
+  {
+    b=mu_ci(data$V2,'t',10000,10,0.9)
+    prom=prom+b/100
+  }
+  prom
 ```
-      Este caso difiere del anterior solo en la cantidad de observaciones que tiene cada una de las 10000 muestras, reduciendo dicha cantidad a la mitad, aunque ello no parece variar en gran medida la fracción de muestras donde mu se encuentra dentro de dicho intervalo de confianza de 0.9 pero si reduce un poco su promedio, al realizar varias ejecuciones. 
+      Este caso difiere del anterior solo en la cantidad de observaciones que tiene cada una de las 10000 muestras, reduciendo dicha cantidad a la mitad, aunque ello no parece variar en gran medida la fracción de muestras donde la media poblaciones se encuentra dentro de dicho intervalo de confianza de 0.9 pero si reduce un poco su promedio, ya que llega hasta 0.891712, bajando 0.004669, al realizar 100 ejecuciones. 
 
 (c) Extraiga 10000 muestras, cada una de 10 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use una distribución normal (que NO se debería usar porque la muestra es demasiado pequeña!). Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
 ```{r}
-  c=mu_ci(data$V2,'n',10000,10,0.9); c
+  prom=0
+  for (i in 1:100)
+  {
+    c=mu_ci(data$V2,'n',10000,10,0.9)
+    prom=prom+c/100
+  }
+  prom
 ```
-      Teniendo en cuenta que para una cantidad de observaciones menor a 30 no es recomendable hacer uso de una distribución normal, se puede observar que la fracción de muestras donde la media poblacional se encuentra dentro del intervalo de confianza tiene un valor cercano al esperado de 0.9, aunque al realizar varias iteraciones su valor promedio es incluso menor que en los casos anteriores, como era de esperarse.
+      Teniendo en cuenta que para una cantidad de observaciones menor a 30 no es recomendable hacer uso de una distribución normal, se puede observar que la fracción de muestras donde la media poblacional se encuentra dentro del intervalo de confianza tiene un valor cercano al esperado de 0.9, aunque al realizar varias iteraciones su valor promedio es incluso menor que en los casos anteriores, como era de esperarse, y dicho valor es 0.861619, 0.000093 por debajo del caso de la distribución t de Student.
 
 (d) Extraiga 10000 muestras, cada una de 3 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
 ```{r}
-  d=mu_ci(data$V2,'t',10000,3,0.9); d
+  prom=0
+  for (i in 1:100)
+  {
+    d=mu_ci(data$V2,'t',10000,3,0.9)
+    prom=prom+d/100
+  }
+  prom
 ```
-      Al disminuir aún más la cantidad de observaciones por cada muestra, es normal que la fracción esperada se aleje más del 0.9 deseado, pues es poco probable que las 3 observaciones de cada muestra sean significativas teniendo una población de 4177, y que su selección fue de manera aleatoria con reemplazo. Dicha fracción tiene un valor promedio de 0.88 considerando varias ejecuciones.
+      Al disminuir aún más la cantidad de observaciones por cada muestra, es normal que la fracción esperada se aleje más del 0.9 deseado, pues es poco probable que las 3 observaciones de cada muestra sean significativas teniendo una población de 4177, y que su selección fue de manera aleatoria con reemplazo. Dicha fracción tiene un valor promedio de 0.879232 considerando 100 ejecuciones, baja 0.01248 con respecto al caso de 10 observaciones y distribución t de Student (b).
 
 (e) Extraiga 10000 muestras, cada una de 3 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use una distribución normal (que NO se debería usar porque la muestra es demasiado pequeña!). Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
 ```{r}
-  e=mu_ci(data$V2,'n',10000,3,0.9); e
+  prom=0
+  for (i in 1:100)
+  {
+    e=mu_ci(data$V2,'n',10000,3,0.9)
+    prom=prom+e/100
+  }
+  prom
 ```
-    
-
+    Se esperaba que este caso obtuviera los peores resultados posibles, ya que se usa una distribución normal cuando no se debería y la cantidad de observaciones por muestra es muy bajita, el valor de la fracción a analizar para 100 iteraciones es, en promedio, 0.878885, si se analiza con respecto al caso inmediatamente anterior (3 observaciones y t de Student) se observa un decremento de 0.000347, y si se compara con el caso de 10 observaciones y también distribución normal, en promedio, disminuye 0.012734.
 ## 4. Conclusiones
