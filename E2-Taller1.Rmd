@@ -110,9 +110,9 @@ plot(qnorm(seq(0, 1, 0.001), mean = 0, sd = 1),
      type = 'l', xaxt = "n", col = "green",main = 'Cuantil Normal', ylab = 'Número de éxitos', xlab = 'P(X = x)')
 axis(1, labels = seq(0, 1, 0.1), at = 0:10 * 100)
 
-plot(x,dt(y,df = 5), type = 'l', col = "orange",
+plot(x,dt(x,df = 5), type = 'l', col = "orange",
      main = 'Densidad T', xlab = 'Número de éxitos', ylab = 'P(X = x)')
-plot(x,pt(y,df = 5), type = 'l', col = "orange",
+plot(x,pt(x,df = 5), type = 'l', col = "orange",
      main = 'T acumulada', xlab = 'Número de éxitos', ylab = 'P(X = x)')
 plot(qt(seq(0, 1, 0.001),df = 5), type = 'l', xaxt = "n", col = "orange",
      main = 'Cuantil T', ylab = 'Número de éxitos', xlab = 'P(X = x)')
@@ -120,51 +120,67 @@ axis(1, labels = seq(0, 1, 0.1), at = 0:10 * 100)
 ```
 
 ## 3. Investigando la construcción de los intervalos de confianza con el lenguaje de programación R
+Se hace uso de la función read.table de R, para leer el dataframe abalone.data (siendo .data el tipo de archivo), usando como separador a la coma y cuyo nombre interno será data (contiene 4177 registros y 9 columnas).
 ```{r}
 data=read.table("abalone.data",sep=",")
+```
+Se crea la función principal: **mu_ci(x,dist,n_samples,n_obs,ci)**, la cual recibe como parámetros un vector **x** (que en este contexto serán los valores de la columna "length" del dataframe abalone), el caracter **dist** cuyo valor puede ser 't' o 'n' dependiendo de si se quiere muestrear siguiendo la distribucion t o la normal, **n_samples** hace referencia al número de muestras (que en este caso será siempre 10000), y **n_obs** almacena la cantidad de observaciones (que en este caso tomará valores de 20, 10 y 3), y **ci** se refiere al intervalo de confianza que se desea (0.9).
 
-eq_in_row <- function(matrix) {
-  s=sum(apply(matrix, 2, function(a) length(unique(a))==1), na.rm = TRUE)
-  return(s)
-}
-
+Internamente, en la función se halla la media poblacional **mu** del vector x, se inicializa un contador **cont**. Se guardan en la matriz **combined** el conjunto de todas las muestras (columnas) con sus respectivas observaciones (filas), haciendo uso de la función **sample()** para sacar una muestra con cierto tamaño **n_size** y la función **replicate()** para generar la cantidad **n_samples** de muestras, todo esto se repite hasta que no exista alguna columna donde todas sus filas tengan el mismo valor para procurar el correcto funcionamiento de **t.test()** para la obtención del intervalo de confianza en el caso de una distribución t de Student y de **confint()** para una distribución normal. Finalmente se retorna la fracción de las muestras donde la media poblacional **mu** se encuentra dentro de los intervalos de confianza respectivos (aumentando el contador cada vez que esto pasaba y diviendolo finalmente en el numero de muestras).
+```{r}
 mu_ci <- function(x,dist,n_samples,n_obs,ci){
-  media=mean(x);  cont=0;
+  mu=mean(x);  cont=0;
   repeat{combined=replicate(n_samples,sample(x,size=n_obs))
     if(eq_in_row(combined)==0){break}}
   for (i in 1:n_samples){
     if (dist=='t'){
       z=t.test(combined[,i], conf.level = ci)
-      if (media>=z$conf.int[1] & media<=z$conf.int[2]){cont=cont+1}}
+      if (mu>=z$conf.int[1] & mu<=z$conf.int[2]){cont=cont+1}}
     if(dist=='n'){
       z=confint(lm(combined[,i]~1),level=ci)
-      if (media>=z[1] & media<=z[2]){cont=cont+1}}}
+      if (mu>=z[1] & mu<=z[2]){cont=cont+1}}}
   return(cont/n_samples)
 }
 ```
+Se crea la funcion **eq_in_row(matrix)** para verificar que no exista alguna columna donde todas sus filas tengan el mismo valor. Haciendo uso de la función **unique()** que retorna un vector con los elementos duplicados de cada fila eliminados y se verfica con la función **length()** que su tamaño sea uno (que todos las columnas tengan el mismo valor) reproduciendo este proceso para cada columna mediante la función **apply()** y usará la función **sum()** para conocer la cantidad de columnas donde todos sus valores son iguales para retornar dicho valor **s** (aunque lo deseable es que este valor sea cero, para que no fallen las funciones **t.test()** ni **confint()**).
+```{r}
+eq_in_row <- function(matrix) {
+  s=sum(apply(matrix, 2, function(a) length(unique(a))==1))
+  return(s)
+}
+```
+
 
 (a) Extraiga 10000 muestras, cada una de 20 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
+
+      En este y los siguientes casos se pasará como argumento el vector data$V2, que es la segunda colummna del dataframe abalone y contiene los valores de "length" que se quieren estudiar, así como se usará la función creada **mu_ci(x,dist,n_samples,n_obs,ci)**.
 ```{r}
   a=mu_ci(data$V2,'t',10000,20,0.9); a
 ```
-
+      Como se puede observar, en este caso, la fracción de las 10000 muestras donde la verdadera media poblacional se encuentra dentro del intervalo de confianza del 90%, siguiendo una distribución t de Student (considerando que esta es la recomendada para casos en que la cantidad de observaciones es menor a 30) y teniendo cada una de ellas 20 registros es cercano al 0.9, y al ejecutarlo varias veces se puede observar que efectivamente, en promedio, dicha fracción tendrá un valor de 0.9.
 
 (b) Extraiga 10000 muestras, cada una de 10 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
 ```{r}
   b=mu_ci(data$V2,'t',10000,10,0.9); b
 ```
+      Este caso difiere del anterior solo en la cantidad de observaciones que tiene cada una de las 10000 muestras, reduciendo dicha cantidad a la mitad, aunque ello no parece variar en gran medida la fracción de muestras donde mu se encuentra dentro de dicho intervalo de confianza de 0.9 pero si reduce un poco su promedio, al realizar varias ejecuciones. 
+
 (c) Extraiga 10000 muestras, cada una de 10 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use una distribución normal (que NO se debería usar porque la muestra es demasiado pequeña!). Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
 ```{r}
   c=mu_ci(data$V2,'n',10000,10,0.9); c
 ```
+      Teniendo en cuenta que para una cantidad de observaciones menor a 30 no es recomendable hacer uso de una distribución normal, se puede observar que la fracción de muestras donde la media poblacional se encuentra dentro del intervalo de confianza tiene un valor cercano al esperado de 0.9, aunque al realizar varias iteraciones su valor promedio es incluso menor que en los casos anteriores, como era de esperarse.
+
 (d) Extraiga 10000 muestras, cada una de 3 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use la distribución t para calcular ese intervalo. Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
 ```{r}
   d=mu_ci(data$V2,'t',10000,3,0.9); d
 ```
+      Al disminuir aún más la cantidad de observaciones por cada muestra, es normal que la fracción esperada se aleje más del 0.9 deseado, pues es poco probable que las 3 observaciones de cada muestra sean significativas teniendo una población de 4177, y que su selección fue de manera aleatoria con reemplazo. Dicha fracción tiene un valor promedio de 0.88 considerando varias ejecuciones.
 
 (e) Extraiga 10000 muestras, cada una de 3 registros (observaciones) de forma aleatoria con reemplazo. Use cada muestra para calcular un intervalo de confianza del 90% para estimar la media poblacional. Use una distribución normal (que NO se debería usar porque la muestra es demasiado pequeña!). Recuerde que para realizar el cálculo se desconoce la varianza poblacional ¿Para qué fracción de las muestras la verdadera media poblacional se encuentra dentro del intervalo de confianza definido?
 ```{r}
   e=mu_ci(data$V2,'n',10000,3,0.9); e
 ```
+    
 
 ## 4. Conclusiones
